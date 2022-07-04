@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "lint": "eslint .",
     "dev": "nodemon index.js",
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -12,9 +13,15 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "2.0.18"
+    "nodemon": "2.0.18",
+    "standard": "17.0.0"
   },
   "dependencies": {
-    "express": "4.18.1"
+    "cors": "2.8.5",
+    "express": "4.18.1",
+    "mongoose": "6.4.2"
+  },
+  "eslintConfig": {
+    "extends": "./node_modules/standard/eslintrc.json"
   }
 }
