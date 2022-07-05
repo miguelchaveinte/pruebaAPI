@@ -4,6 +4,7 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 
+//Importamos el modelo de mongoose para Notas
 const Note = require('./models/Note')
 
 app.use(cors())
@@ -13,12 +14,18 @@ app.get('/', (request, response) => {
   response.send('<h1> Probando API </h1>')
 })
 
+// Se podía modularizar la ruta de la API con un tipo middelware Router:
+// const notesRouter = require('./controllers/notes')
+// app.use('/api/notes', notesRouter)
+
+// Obtenemos todas las notas 
 app.get('/api/notes', (request, response) => {
   Note.find({}).then((notes) => {
     response.json(notes)
   })
 })
 
+// Obtenemos una nota por id
 app.get('/api/notes/:id', (request, response, next) => {
   const { id } = request.params
   Note.findById(id)
@@ -29,6 +36,7 @@ app.get('/api/notes/:id', (request, response, next) => {
     .catch(err => next(err))
 })
 
+// Modificar una nota
 app.put('/api/notes/:id', (request, response, next) => {
   const { id } = request.params
   const note = request.body
@@ -38,6 +46,7 @@ app.put('/api/notes/:id', (request, response, next) => {
   })
 })
 
+// Borrar una nota
 app.delete('/api/notes/:id', (request, response, next) => {
   const { id } = request.params
   Note.findByIdAndRemove(id)
@@ -46,6 +55,7 @@ app.delete('/api/notes/:id', (request, response, next) => {
     }).catch(err => next(err))
 })
 
+// Crear una nota
 app.post('/api/notes', (request, response) => {
   const note = request.body
 
@@ -69,10 +79,12 @@ app.post('/api/notes', (request, response) => {
   })
 })
 
+// not found middleware
 app.use((request, response,next) => {
   response.status(404).end()
 })
 
+// Error handler
 app.use((error, request, response, next) => {
   console.error(error.message)
   if (error.name === 'CastError') {
@@ -86,6 +98,7 @@ app.use((error, request, response, next) => {
   }
 })
 
+// Puerto de escucha
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
