@@ -1,7 +1,16 @@
-PUT  http://localhost:3001/api/notes/62c36d18931da5a7982ec4bd
+PUT  http://localhost:3001/api/notes/62c35f55b6e433d392fe550a
 Content-Type: application/json
 
 {
-  "content": "Cambiamos contenido por segunda vez",
+  "content": "Cambiamos contenido por tercera vez",
+  "important": true
+}
+
+###
+
+PUT  http://localhost:3001/api/notes/62c35f55b6e433d392fe550a
+Content-Type: application/json
+
+{
   "important": true
 }
