@@ -1,5 +1,6 @@
 const notesRouter = require('express').Router()
 const Note = require('../../models/Note')
+const User = require('../../models/User')
 
 /**
  * @typedef Note
@@ -15,10 +16,16 @@ const Note = require('../../models/Note')
  * @returns {Array} 200 - Array de todas las notas
  * @returns {Error} default - Error
  */
-notesRouter.get('/', (request, response, next) => {
-  Note.find({}).then((notes) => {
-    response.json(notes)
-  }).catch((err) => next(err))
+notesRouter.get('/', async (request, response, next) => {
+  try {
+    const notas = await Note.find({}).populate('user', {
+      username: 1,
+      name: 1
+    })
+    response.json(notas)
+  } catch (err) {
+    next(err)
+  }
 })
 
 /**
@@ -73,15 +80,14 @@ notesRouter.put('/:id', (request, response, next) => {
  * @group Note - Operaciones sobre notas
  * @param {string} id.path.required - Id de la nota
  * @returns {} 204 - Nota eliminada correctamente
- * @returns {Error} default - Error
+ * @returns {Error} 404 - Error no se ha podido eliminar la nota
  */
-notesRouter.delete('/:id', (request, response, next) => {
+notesRouter.delete('/:id', async (request, response, next) => {
   const { id } = request.params
-  Note.findByIdAndRemove(id)
-    .then((result) => {
-      response.status(204).end()
-    })
-    .catch((err) => next(err))
+  const res = await Note.findByIdAndDelete(id)
+  if (res === null) return response.sendStatus(404)
+
+  response.status(204).end()
 })
 
 /**
@@ -90,30 +96,47 @@ notesRouter.delete('/:id', (request, response, next) => {
  * @group Note - Operaciones sobre notas
  * @param {string} content.query - Contenido de la nota
  * @param {boolean} important.query - Indica si la nota es importante
+ * @param {string} user.query.required - Id del usuario
  * @returns {object} 200 - Array de la información de la nota creada
  * @returns {Error} 400 - Array de la información del error
  * @returns {Error} default - Error
  */
-notesRouter.post('/', (request, response,next) => {
+notesRouter.post('/', async (request, response, next) => {
   const note = request.body || request.query
+
+  // sacar userId de request
+  const userId = request.query.user
+
+  if (!userId) {
+    return response.status(400).json({
+      error: 'required "userId" parameter is missing'
+    })
+  }
+
+  const user = await User.findById(userId)
 
   const noteToAdd = new Note({
     content: note.content || request.query.content,
     date: new Date(),
-    important: note.important || request.query.important || false
+    important: note.important || request.query.important || false,
+    user: user._id
   })
 
-  if (!noteToAdd.content || !noteToAdd ) {
+  if (!noteToAdd.content || !noteToAdd) {
     return response.status(400).json({
       error: 'note.content missing'
     })
   }
-  noteToAdd
-    .save()
-    .then((savedNote) => {
-      response.json(savedNote)
-    })
-    .catch((err) => next(err))
+  try {
+    const savedNote = await noteToAdd.save()
+
+    user.notes = user.notes.concat(savedNote._id)
+    await user.save()
+
+    response.json(savedNote)
+  } catch (error) {
+    next(error)
+  }
 })
 
 module.exports = notesRouter

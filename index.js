@@ -5,9 +5,7 @@ const app = express()
 const cors = require('cors')
 
 // Importamos el modelo de mongoose para Notas
-const Note = require('./models/Note')
-
-const notesRouter = require('./routes/api/notes')
+//const Note = require('./models/Note')
 
 const expressSwagger = require('express-swagger-generator')(app)
 
@@ -35,9 +33,13 @@ const options = {
     }
   },
   basedir: __dirname, // app absolute path
-  files: ['./routes/api/notes.js'] // Path to the API handle folder
+  files: ['./routes/api/*.js'] // Path to the API handle folder
 }
 expressSwagger(options)
+
+const notesRouter = require('./routes/api/notes')
+const usersRouter = require('./routes/api/users')
+
 
 app.use(cors())
 app.use(express.json())
@@ -48,6 +50,7 @@ app.get('/', (request, response) => {
 
 // Notas modularizada
 app.use('/api/notes', notesRouter)
+app.use('/api/users', usersRouter)
 
 // not found middleware
 app.use((request, response, next) => {
