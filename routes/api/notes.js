@@ -12,7 +12,7 @@ const Note = require('../../models/Note')
  * @route  GET /api/notes
  * @summary Devuelve todas las notas
  * @group Note - Operaciones sobre notas
- * @returns {Array} 200 - Array de todas las notas
+ * @returns {object} 200 - Array de todas las notas
  * @returns {Error} default - Error
  */
 notesRouter.get('/', (request, response, next) => {
