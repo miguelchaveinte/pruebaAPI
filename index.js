@@ -5,7 +5,7 @@ const app = express()
 const cors = require('cors')
 
 // Importamos el modelo de mongoose para Notas
-//const Note = require('./models/Note')
+// const Note = require('./models/Note')
 
 const expressSwagger = require('express-swagger-generator')(app)
 
@@ -33,13 +33,12 @@ const options = {
     }
   },
   basedir: __dirname, // app absolute path
-  files: ['./routes/api/*.js'] // Path to the API handle folder
+  files: ['./routes/api/*.js', './models/*.js'] // Path to the API handle folder
 }
 expressSwagger(options)
 
 const notesRouter = require('./routes/api/notes')
 const usersRouter = require('./routes/api/users')
-
 
 app.use(cors())
 app.use(express.json())

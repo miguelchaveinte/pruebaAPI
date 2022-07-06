@@ -1,6 +1,14 @@
 const { Schema, model } = require('mongoose')
 
 // Creamos el esquema de la nota
+/**
+ * @typedef Note
+ * @property {string} content.required - Contenido de la nota
+ * @property {Date} date - Fecha creación de la nota en formato ISO
+ * @property {boolean} important - Nota importante o no
+ * @property {Array.<User>} users
+ */
+
 const noteSchema = new Schema({
   content: String,
   date: Date,

@@ -5,7 +5,7 @@ const User = require('../../models/User')
 /**
  * @typedef Note
  * @property {string} content.required - Contenido de la nota
- * @property {string} date - Fecha creación de la nota
+ * @property {Date} date - Fecha creación de la nota en formato ISO
  * @property {boolean} important - Nota importante o no
  */
 
@@ -13,7 +13,7 @@ const User = require('../../models/User')
  * @route  GET /api/notes
  * @summary Devuelve todas las notas
  * @group Note - Operaciones sobre notas
- * @returns {Array} 200 - Array de todas las notas
+ * @returns {Array.<Note>} 200 - Array de todas las notas
  * @returns {Error} default - Error
  */
 notesRouter.get('/', async (request, response, next) => {
@@ -33,7 +33,7 @@ notesRouter.get('/', async (request, response, next) => {
  * @summary Devuelve una nota
  * @group Note - Operaciones sobre notas
  * @param {string} id.path.required - Id de la nota
- * @returns {object} 200 - Array de la información de la nota
+ * @returns {Note} 200 - Array de la información de la nota
  * @returns {Error} 404 - Error
  * @returns {Error} default - Error
  */
@@ -54,7 +54,7 @@ notesRouter.get('/:id', (request, response, next) => {
  * @param {string} id.path.required - Id de la nota
  * @param {string} content.query - Contenido de la nota
  * @param {boolean} important.query - Indica si la nota es importante
- * @returns {object} 200 - Array de la información de la nota actualizada
+ * @returns {Note} 200 - Array de la información de la nota actualizada
  * @returns {Error} 400 - Array de la información de los parametros de la query que causa el error
  * @returns {Error} default - Error
  */
@@ -97,7 +97,7 @@ notesRouter.delete('/:id', async (request, response, next) => {
  * @param {string} content.query - Contenido de la nota
  * @param {boolean} important.query - Indica si la nota es importante
  * @param {string} user.query.required - Id del usuario
- * @returns {object} 200 - Array de la información de la nota creada
+ * @returns {Note} 200 - Array de la información de la nota creada
  * @returns {Error} 400 - Array de la información del error
  * @returns {Error} default - Error
  */
